@@ -6,8 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BE037E0648E2C21F0AEF2C2D /* Pods_SnapHabit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5CB486B4A470F40093598BB /* Pods_SnapHabit.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		0292A4F92DDAFDC70045E27D /* SnapHabit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SnapHabit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1965FA6C40678FC6E65D73E8 /* Pods-SnapHabit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SnapHabit.release.xcconfig"; path = "Target Support Files/Pods-SnapHabit/Pods-SnapHabit.release.xcconfig"; sourceTree = "<group>"; };
+		3F5CC68DDC62ADCE5B74B1C7 /* Pods-SnapHabit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SnapHabit.debug.xcconfig"; path = "Target Support Files/Pods-SnapHabit/Pods-SnapHabit.debug.xcconfig"; sourceTree = "<group>"; };
+		C5CB486B4A470F40093598BB /* Pods_SnapHabit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SnapHabit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE037E0648E2C21F0AEF2C2D /* Pods_SnapHabit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -47,6 +55,8 @@
 			children = (
 				0292A4FB2DDAFDC70045E27D /* SnapHabit */,
 				0292A4FA2DDAFDC70045E27D /* Products */,
+				16751D6F81D91DE57CE79B8F /* Pods */,
+				59A79720A4FE7FA3A055E25B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,6 +68,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		16751D6F81D91DE57CE79B8F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				3F5CC68DDC62ADCE5B74B1C7 /* Pods-SnapHabit.debug.xcconfig */,
+				1965FA6C40678FC6E65D73E8 /* Pods-SnapHabit.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		59A79720A4FE7FA3A055E25B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C5CB486B4A470F40093598BB /* Pods_SnapHabit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -65,9 +92,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0292A50C2DDAFDC70045E27D /* Build configuration list for PBXNativeTarget "SnapHabit" */;
 			buildPhases = (
+				9FF5E9373AF0E51536873499 /* [CP] Check Pods Manifest.lock */,
 				0292A4F52DDAFDC70045E27D /* Sources */,
 				0292A4F62DDAFDC70045E27D /* Frameworks */,
 				0292A4F72DDAFDC70045E27D /* Resources */,
+				A0F237215A2F45986BA9FE09 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -77,8 +106,6 @@
 				0292A4FB2DDAFDC70045E27D /* SnapHabit */,
 			);
 			name = SnapHabit;
-			packageProductDependencies = (
-			);
 			productName = SnapHabit;
 			productReference = 0292A4F92DDAFDC70045E27D /* SnapHabit.app */;
 			productType = "com.apple.product-type.application";
@@ -127,6 +154,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		9FF5E9373AF0E51536873499 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SnapHabit-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A0F237215A2F45986BA9FE09 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SnapHabit/Pods-SnapHabit-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SnapHabit/Pods-SnapHabit-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SnapHabit/Pods-SnapHabit-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		0292A4F52DDAFDC70045E27D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -140,6 +209,7 @@
 /* Begin XCBuildConfiguration section */
 		0292A50D2DDAFDC70045E27D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3F5CC68DDC62ADCE5B74B1C7 /* Pods-SnapHabit.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -148,11 +218,12 @@
 				DEVELOPMENT_TEAM = HFX859F777;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SnapHabit/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -168,6 +239,7 @@
 		};
 		0292A50E2DDAFDC70045E27D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1965FA6C40678FC6E65D73E8 /* Pods-SnapHabit.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -176,11 +248,12 @@
 				DEVELOPMENT_TEAM = HFX859F777;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SnapHabit/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -231,7 +304,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -294,7 +367,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

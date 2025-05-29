@@ -1,0 +1,6 @@
+framework module Pods_SnapHabit {
+  umbrella header "Pods-SnapHabit-umbrella.h"
+
+  export *
+  module * { export * }
+}

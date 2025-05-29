@@ -1,0 +1,26 @@
+PODS:
+  - LBTATools (1.0.12)
+  - Realm (20.0.2):
+    - Realm/Headers (= 20.0.2)
+  - Realm/Headers (20.0.2)
+  - RealmSwift (20.0.2):
+    - Realm (= 20.0.2)
+
+DEPENDENCIES:
+  - LBTATools
+  - RealmSwift
+
+SPEC REPOS:
+  trunk:
+    - LBTATools
+    - Realm
+    - RealmSwift
+
+SPEC CHECKSUMS:
+  LBTATools: 389a901a01b9a56bea5682c40cd6e23530f40015
+  Realm: 395416e3b150a37ca12fee6477a2ec8c11f8a048
+  RealmSwift: 199fd4d7e86491d1147c662c6a36aa55136a54d0
+
+PODFILE CHECKSUM: ee463500cfeb4468540801eeadd1237256edb05a
+
+COCOAPODS: 1.16.2
