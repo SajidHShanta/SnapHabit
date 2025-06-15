@@ -71,7 +71,7 @@ extension HabitEntryGridView: UICollectionViewDelegate, UICollectionViewDataSour
 class HabitEntryGridCell: UICollectionViewCell {
     
     let imageView = UIImageView(image: nil, contentMode: .scaleAspectFill)
-    let dateLabel = UILabel(font: .systemFont(ofSize: 12), textColor: .darkGray)
+    let dateLabel = UILabel(font: .roundedSystemFont(ofSize: 18, weight: .regular), textColor: .darkGray)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

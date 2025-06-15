@@ -13,8 +13,8 @@ class DetailsVC: BaseVC {
     
     let container = UIView()
     
-    let streakLabel = UILabel(font: .systemFont(ofSize: 16))
-    let maxStreakLabel = UILabel(font: .systemFont(ofSize: 14), textColor: .gray)
+    let streakLabel = UILabel(font: .roundedSystemFont(ofSize: 18, weight: .regular))
+    let maxStreakLabel = UILabel(font: .roundedSystemFont(ofSize: 18, weight: .regular), textColor: .gray)
     
     let editButton: UIImageView = {
         let btn = UIImageView(image: UIImage(systemName: "square.and.pencil.circle")!, contentMode: .scaleAspectFit)
@@ -63,6 +63,7 @@ class DetailsVC: BaseVC {
         
         // Do any additional setup after loading the view.
         title = habit.title
+        self.navigationController?.isNavigationBarHidden = false
         
         editButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleEdit)))
         deleteButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDelete)))

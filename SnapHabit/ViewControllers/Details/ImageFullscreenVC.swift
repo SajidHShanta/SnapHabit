@@ -12,8 +12,8 @@ class ImageFullscreenVC: UIViewController {
     
     let container = UIView()
     
-    let titleLabel = UILabel(font: .boldSystemFont(ofSize: 18), textColor: .white)
-    let dateLabel = UILabel(font: .boldSystemFont(ofSize: 12), textColor: .white)
+    let titleLabel = UILabel(font: .roundedSystemFont(ofSize: 22, weight: .bold), textColor: .white)
+    let dateLabel = UILabel(font: .roundedSystemFont(ofSize: 18, weight: .regular), textColor: .white)
 
     private let image: UIImage
     

@@ -62,7 +62,7 @@ extension HabitCollectionView: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: self.frame.width-32, height: 100)
+        return .init(width: self.frame.width, height: 100)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -74,11 +74,11 @@ extension HabitCollectionView: UICollectionViewDelegate, UICollectionViewDataSou
 
 class HabitCollectionViewCell: UICollectionViewCell {
     
-    var container = UIView(backgroundColor: UIColor(hexString: "#ADD8E6"))
+    var container = UIView(backgroundColor: UIColor(hexString: "#DFE3EB"))
     
-    let titleLabel = UILabel(font: .boldSystemFont(ofSize: 18))
-    let streakLabel = UILabel(font: .systemFont(ofSize: 16))
-    let maxStreakLabel = UILabel(font: .systemFont(ofSize: 14), textColor: .gray)
+    let titleLabel = UILabel(font: .roundedSystemFont(ofSize: 18, weight: .semibold))
+    let streakLabel = UILabel(font: .roundedSystemFont(ofSize: 16, weight: .regular))
+    let maxStreakLabel = UILabel(font: .roundedSystemFont(ofSize: 16, weight: .regular), textColor: .gray)
     
     //    lazy var checkInButton: UIButton = {
     //        let btn = UIButton()

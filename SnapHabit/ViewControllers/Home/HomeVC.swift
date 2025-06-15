@@ -10,10 +10,40 @@ import LBTATools
 import RealmSwift
 
 class HomeVC: BaseVC {
+        
+    private let conatiner = UIView()
+    private let upperView = UIView()
     
-    let tabbarView = UIView()
+    private let cameraImgView: UIImageView = {
+        let imageView = UIImageView()
+        let image = UIImage(named: "camera-solid")?.withRenderingMode(.alwaysTemplate)
+        
+        imageView.image = image
+        imageView.contentMode = .scaleAspectFit
+        imageView.clipsToBounds = true
+        imageView.tintColor = .accent
+        return imageView
+    }()
     
-    private let conatiner = UIView(backgroundColor: .red)
+    private let circularProgressView = CircularProgressView()
+
+    private let belowLabel: UILabel = {
+        let label = UILabel()
+        label.text = "3 of 4 tasks done today."
+        label.font = .roundedSystemFont(ofSize: 18, weight: .regular)
+        label.textColor = .background
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let titleLabel = UILabel(text: "Habits", font: .roundedSystemFont(ofSize: 22, weight: .bold), textColor: .black, textAlignment: .left, numberOfLines: 1)
+    
+    let addButton: UIImageView = {
+        let btn = UIImageView(image: UIImage(systemName: "plus.square.fill")!, contentMode: .scaleAspectFit)
+        btn.clipsToBounds = true
+        btn.isUserInteractionEnabled = true
+        return btn
+    }()
     
     private let habitCollectionView = HabitCollectionView()
     
@@ -33,7 +63,12 @@ class HomeVC: BaseVC {
         
         // Do any additional setup after loading the view.
         
+        title = "SnapHabit"
+        self.navigationController?.isNavigationBarHidden = true
+        
         cameraManager = CameraPermissionManager(presentingVC: self)
+        
+        addButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(addHabitTapped)))
                 
         habitCollectionView.onCellTap = { [weak self] habit in
             guard let self = self else { return }
@@ -44,36 +79,76 @@ class HomeVC: BaseVC {
             checkInTapped(habit)
         }
                 
-        setupNav()
+//        setupNav()
         setupViews()
         loadHabits()
+        
+        circularProgressView.setProgress(0.75)
     }
     
-    fileprivate func setupNav() {
-        title = "SnapHabit"
-        
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "plus.square.fill")!, style: .plain, target: self, action: #selector(addHabitTapped))
-        
-        let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .bold)
-        let plusImage = UIImage(systemName: "plus.square.fill", withConfiguration: config)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: plusImage,
-            style: .plain,
-            target: self,
-            action: #selector(addHabitTapped)
-        )
-        navigationItem.rightBarButtonItem?.tintColor = .systemGreen
-        
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.isNavigationBarHidden = true
     }
+    
+//    fileprivate func setupNav() {
+//        title = "SnapHabit"
+//                
+//        let config = UIImage.SymbolConfiguration(pointSize: 40, weight: .bold)
+//        let plusImage = UIImage(systemName: "plus.square.fill", withConfiguration: config)
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(
+//            image: plusImage,
+//            style: .plain,
+//            target: self,
+//            action: #selector(addHabitTapped)
+//        )
+//        navigationItem.rightBarButtonItem?.tintColor = .systemGreen
+//        
+//    }
     
     fileprivate func setupViews() {
-        view.backgroundColor = .white
+        view.backgroundColor = .background
         view.addSubview(conatiner)
         conatiner.fillSuperviewSafeAreaLayoutGuide()
+        
+        upperView.addSubview(cameraImgView)
+        cameraImgView.anchor(
+            top: upperView.topAnchor,
+            leading: upperView.leadingAnchor,
+            bottom: upperView.bottomAnchor,
+            trailing: upperView.trailingAnchor
+        )
+        // Set aspect ratio constraint (height = width * aspect ratio)
+        if let img = cameraImgView.image {
+            let ratio = img.size.height / img.size.width
+            cameraImgView.heightAnchor.constraint(equalTo: cameraImgView.widthAnchor, multiplier: ratio).isActive = true
+        }
+        
+        
+        // Add circular view and label inside cameraImgView
+        cameraImgView.addSubview(circularProgressView)
+        cameraImgView.addSubview(belowLabel)
+        
+        let h = view.frame.width/3
+        circularProgressView.constrainWidth(h)
+        circularProgressView.constrainHeight(h)
+        circularProgressView.backgroundColor = .accent
+        circularProgressView.layer.cornerRadius = h/2
+        // Center the circle in the image view
+        circularProgressView.centerInSuperview()
+
+        // Anchor the label below the circle
+        belowLabel.anchor(top: circularProgressView.bottomAnchor, leading: cameraImgView.leadingAnchor, bottom: cameraImgView.bottomAnchor, trailing: cameraImgView.trailingAnchor)
                 
         conatiner.stack(
-            habitCollectionView
-        )
+            upperView,
+            conatiner.hstack(
+                titleLabel,
+                UIView(),
+                addButton.withSize(.init(width: 35, height: 35))
+            ),
+            habitCollectionView,
+            spacing: 16
+        ).withMargins(.init(top: 0, left: 16, bottom: 0, right: 16))
     }
     
     @objc func addHabitTapped() {
