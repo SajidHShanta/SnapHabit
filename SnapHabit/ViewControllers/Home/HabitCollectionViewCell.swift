@@ -11,7 +11,7 @@ import LBTATools
 class DoneHabitCollectionViewCell: UICollectionViewCell {
     
     var container: UIView = {
-        let view = UIView()
+        let view = UIView(backgroundColor: .clear)
         view.layer.cornerRadius = 10
         view.layer.borderWidth = 2
         view.layer.borderColor = UIColor.lightBackground.cgColor
@@ -113,7 +113,7 @@ class DoneHabitCollectionViewCell: UICollectionViewCell {
 class NotDoneHabitCollectionViewCell: UICollectionViewCell {
     
     var container: UIView = {
-        let view = UIView()
+        let view = UIView(backgroundColor: .clear)
         view.layer.cornerRadius = 10
         view.layer.borderWidth = 2
         view.layer.borderColor = UIColor.lightBackground.cgColor

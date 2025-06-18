@@ -11,43 +11,62 @@ import RealmSwift
 
 class DetailsVC: BaseVC {
     
-    let container = UIView()
+    let container = UIView(backgroundColor: .clear)
     
-    let streakLabel = UILabel(font: .roundedSystemFont(ofSize: 18, weight: .regular))
-    let maxStreakLabel = UILabel(font: .roundedSystemFont(ofSize: 18, weight: .regular), textColor: .gray)
-    
-    let editButton: UIImageView = {
-        let btn = UIImageView(image: UIImage(systemName: "square.and.pencil.circle")!, contentMode: .scaleAspectFit)
-        btn.clipsToBounds = true
-        btn.isUserInteractionEnabled = true
-        return btn
+    let streakContainer: UIView = {
+        let view = UIView(backgroundColor: .clear)
+        view.layer.cornerRadius = 10
+        view.layer.borderWidth = 2
+        view.layer.borderColor = UIColor.lightBackground.cgColor
+        return view
     }()
     
-    let deleteButton: UIImageView = {
-        let btn = UIImageView(image: UIImage(systemName: "trash.circle")!, contentMode: .scaleAspectFit)
-        btn.tintColor = .red
-        btn.clipsToBounds = true
-        btn.isUserInteractionEnabled = true
-        return btn
+    let imageGridContainer: UIView = {
+        let view = UIView(backgroundColor: .clear)
+        view.layer.cornerRadius = 10
+        view.layer.borderWidth = 2
+        view.layer.borderColor = UIColor.lightBackground.cgColor
+        return view
     }()
     
+    let yourStreaksTitleLabel = UILabel(text: "Your Streaks", font: .roundedSystemFont(ofSize: 18, weight: .bold), textColor: .text, textAlignment: .left, numberOfLines: 1)
+    let currentStreakTitleLabel  = UILabel(text: "Current Streak", font: .roundedSystemFont(ofSize: 14, weight: .regular), textColor: .textLight, textAlignment: .center, numberOfLines: 1)
+    let bestStreakTitleLabel  = UILabel(text: "Best Streak", font: .roundedSystemFont(ofSize: 14, weight: .regular), textColor: .textLight, textAlignment: .center, numberOfLines: 1)
+
+    let currentStreakValueLabel  = UILabel(text: "", font: .roundedSystemFont(ofSize: 48, weight: .bold), textColor: .accent, textAlignment: .center, numberOfLines: 1)
+    let bestStreakValueLabel  = UILabel(text: "", font: .roundedSystemFont(ofSize: 48, weight: .bold), textColor: .textLight, textAlignment: .center, numberOfLines: 1)
+    
+    let currentDayLabel  = UILabel(text: "days", font: .roundedSystemFont(ofSize: 12, weight: .regular), textColor: .textLight, textAlignment: .center, numberOfLines: 1)
+    let bestDayLabel  = UILabel(text: "days", font: .roundedSystemFont(ofSize: 12, weight: .regular), textColor: .textLight, textAlignment: .center, numberOfLines: 1)
+    
+    let streakQuoteLabel = UILabel(text: "Keep up the great work! Every day counts.", font: .roundedSystemFont(ofSize: 14, weight: .regular), textColor: .textLight, textAlignment: .center, numberOfLines: 1)
+    
+    let imageGridTitle = UILabel(text: "Visual Progress", font: .roundedSystemFont(ofSize: 18, weight: .bold), textColor: .text, textAlignment: .left, numberOfLines: 1)
     let entryGridView = HabitEntryGridView()
     
-    private let realm = try! Realm()
+    let bottomBtnView: UIView = {
+        let view = UIView(backgroundColor: .accent)
+        view.layer.cornerRadius = 10
+        return view
+    }()
+    let bottomBtnIcon: UIImageView = {
+        let imgView = UIImageView(image: UIImage(systemName: "camera.fill"))
+        imgView.contentMode = .scaleAspectFit
+        imgView.tintColor = .background
+        return imgView
+    }()
+    let bottomBtnLabel = UILabel(text: "", font: .roundedSystemFont(ofSize: 14, weight: .semibold), textColor: .background, textAlignment: .left, numberOfLines: 1)
+    
+    var cameraManager: CameraPermissionManager!
 
+    //    private let realm = try! Realm()
+    private lazy var realm = try! Realm()
+    
     private var habit: Habit {
         didSet {
-            self.title = habit.title
-            entryGridView.items = habit.entries.sorted(by: { $0.date > $1.date })
-            streakLabel.text = "🔥 Streak: \(habit.streak)"
-            maxStreakLabel.text = "🏆 Max: \(habit.maxStreak)"
+            updateValues()
         }
     }
-    
-//    var entries: [HabitEntry] {
-//        return habit.entries.sorted(by: { $0.date > $1.date })
-//    }
-    
     
     init(habit: Habit) {
         self.habit = habit
@@ -62,12 +81,134 @@ class DetailsVC: BaseVC {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
-        title = habit.title
+        cameraManager = CameraPermissionManager(presentingVC: self)
+        
+        bottomBtnView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(checkInTapped)))
+
+        updateValues()
+        setupNav()
+        setupViews()
+    }
+    
+    fileprivate func setupViews() {
+        view.backgroundColor = .background
+        view.addSubview(container)
+        container.fillSuperviewSafeAreaLayoutGuide()
+        
+        streakContainer.stack(
+            yourStreaksTitleLabel,
+            streakContainer.hstack(
+                streakContainer.stack(
+                    currentStreakTitleLabel,
+                    currentStreakValueLabel,
+                    currentDayLabel,
+                    spacing: 3
+                ),
+                streakContainer.stack(
+                    bestStreakTitleLabel,
+                    bestStreakValueLabel,
+                    bestDayLabel,
+                    spacing: 3
+                ),
+                spacing: 16,
+                distribution: .fillEqually
+            ),
+            UIView(backgroundColor: .lightBackground).withHeight(2),
+            streakQuoteLabel,
+            spacing: 16
+        ).withMargins(.allSides(16))
+        
+        setupGridView()
+        imageGridContainer.stack(
+            imageGridTitle,
+            entryGridView,
+            spacing: 16
+        ).withMargins(.allSides(16))
+        
+        bottomBtnView.stack(
+            bottomBtnView.hstack(
+                bottomBtnIcon.withWidth(20),
+                bottomBtnLabel,
+                spacing: 6,
+                alignment: .center
+            ),
+            alignment: .center
+        )
+        
+        container.stack(
+            streakContainer,
+            imageGridContainer,
+            bottomBtnView.withHeight(50),
+            spacing: 16
+        ).withMargins(.init(top: 0, left: 16, bottom: 0, right: 16))
+    }
+    
+    fileprivate func updateValues() {
+        self.title = habit.title
+        entryGridView.items = habit.entries.sorted(by: { $0.date > $1.date })
+        currentStreakValueLabel.text = "\(habit.streak)"
+        bestStreakValueLabel.text = "\(habit.maxStreak)"
+        currentDayLabel.text = habit.streak == 1 ? "day" : "days"
+        bestDayLabel.text = habit.streak == 1 ? "day" : "days"
+        
+        imageGridContainer.isHidden = habit.entries.isEmpty
+        
+        if habit.isCheckedInToday {
+            bottomBtnView.backgroundColor = .greenLight
+            bottomBtnLabel.textColor = .greenDeep
+            bottomBtnLabel.text = "Completed Today!"
+            bottomBtnIcon.image = UIImage(systemName: "checkmark.circle.fill")
+            bottomBtnIcon.tintColor = .greenDeep
+            bottomBtnView.isUserInteractionEnabled = false
+        } else {
+            bottomBtnView.backgroundColor = .accent
+            bottomBtnLabel.textColor = .background
+            bottomBtnLabel.text = "Upload Today's Photo"
+            bottomBtnIcon.image = UIImage(systemName: "camera.fill")
+            bottomBtnIcon.tintColor = .background
+            bottomBtnView.isUserInteractionEnabled = true
+        }
+    }
+    
+    fileprivate func setupNav() {
         self.navigationController?.isNavigationBarHidden = false
+        title = habit.title
+        navigationItem.backButtonTitle = ""
         
-        editButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleEdit)))
-        deleteButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleDelete)))
+        let appearance = UINavigationBarAppearance()
+          appearance.configureWithTransparentBackground()
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.text]
+          appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.text]
+          
+          navigationController?.navigationBar.standardAppearance = appearance
+          navigationController?.navigationBar.compactAppearance = appearance
+          navigationController?.navigationBar.scrollEdgeAppearance = appearance
         
+        let edit = makeNavButton(image: UIImage(systemName: "square.and.pencil")!, action: #selector(handleEdit))
+        let delete = makeNavButton(image: UIImage(systemName: "trash")!, action: #selector(handleDelete), tintColor: .red)
+
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: delete), UIBarButtonItem(customView: edit)] // right to left
+    }
+    
+    func makeNavButton(image: UIImage, action: Selector, tintColor: UIColor = .accent) -> UIView {
+        let imageView = UIImageView(image: image)
+        imageView.tintColor = tintColor
+        imageView.contentMode = .scaleAspectFit
+        imageView.isUserInteractionEnabled = true
+//        imageView.layer.cornerRadius = 20
+        imageView.clipsToBounds = true
+
+        let tap = UITapGestureRecognizer(target: self, action: action)
+        imageView.addGestureRecognizer(tap)
+        
+        let container = UIView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        imageView.frame = container.bounds
+        container.addSubview(imageView)
+        
+        return container
+    }
+
+    fileprivate func setupGridView() {
         entryGridView.items = habit.entries.sorted(by: { $0.date > $1.date })
         entryGridView.onCellTap = { [weak self] entry in
             guard let self = self else { return }
@@ -77,45 +218,6 @@ class DetailsVC: BaseVC {
                 self.present(vc, animated: true)
             }
         }
-        
-        setupViews()
-    }
-    
-    fileprivate func setupViews() {
-        view.backgroundColor = .systemBackground
-        view.addSubview(container)
-        container.fillSuperviewSafeAreaLayoutGuide()
-
-        streakLabel.text = "🔥 Streak: \(habit.streak)"
-        maxStreakLabel.text = "🏆 Max: \(habit.maxStreak)"
-                
-//        container.stack(
-//            streakLabel,
-//            maxStreakLabel,
-//            container.hstack(
-//                editButton.withSize(.init(width: 100, height: 100)),
-//                deleteButton.withSize(.init(width: 50, height: 50)),
-//                spacing: 16,
-//                distribution: .fillEqually
-//            ),
-//            UIView(),
-//            spacing: 16
-//        ).withMargins(.allSides(16))
-        
-        
-        
-        container.stack(
-            streakLabel,
-            maxStreakLabel,
-            container.hstack(
-                editButton.withHeight(50),//.withSize(.init(width: 50, height: 50)),
-                deleteButton.withHeight(50),//.withSize(.init(width: 50, height: 50)),
-                spacing: 16,
-                distribution: .fillEqually
-            ),
-            entryGridView,
-            spacing: 16
-        ).withMargins(.allSides(16))
     }
     
     @objc func handleEdit() {
@@ -126,32 +228,31 @@ class DetailsVC: BaseVC {
             textField.placeholder = "Habit name"
             self?.enforceMaxLengthForAlertTextField(textField)
         }
-
+        
         let saveAction = UIAlertAction(title: "Save", style: .default) { _ in
             guard let newTitle = alert.textFields?.first?.text?.trimmingCharacters(in: .whitespacesAndNewlines),
                   !newTitle.isEmpty,
                   newTitle != self.habit.title else {
                 return
             }
-
+            
             if self.realm.object(ofType: Habit.self, forPrimaryKey: newTitle) != nil {
                 self.showSimpleAlert(title: "Name Taken", message: "Another habit already uses this name.")
                 return
             }
-
+            
             self.editHabitName(self.habit, to: newTitle, in: self.realm)
             self.showSimpleAlert(title: "Updated", message: "Habit name updated to \"\(newTitle)\".")
             
             // refresh related UI
-//            self.title = self.habit.title
+            //            self.title = self.habit.title
         }
-
+        
         alert.addAction(saveAction)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         present(alert, animated: true)
     }
-
     
     @objc func handleDelete() {
         let alert = UIAlertController(
@@ -173,7 +274,7 @@ class DetailsVC: BaseVC {
         
         present(alert, animated: true)
     }
-
+    
     
     func editHabitName(_ habit: Habit, to newTitle: String, in realm: Realm) {
         do {
@@ -186,7 +287,7 @@ class DetailsVC: BaseVC {
                 updatedHabit.streak = habit.streak
                 updatedHabit.maxStreak = habit.maxStreak
                 updatedHabit.entries.append(objectsIn: habit.entries)
-
+                
                 // Add the new habit before deleting old one
                 realm.add(updatedHabit, update: .modified)
                 
@@ -211,13 +312,58 @@ class DetailsVC: BaseVC {
                 realm.delete(habit.entries) // Delete all entries first
                 realm.delete(habit)         // Then delete the habit itself
                 
-//                self.showSimpleAlert(title: "Deleted", message: "Habit has been deleted.") {
-//                    self.navigationController?.popViewController(animated: true)
-//                }
+                //                self.showSimpleAlert(title: "Deleted", message: "Habit has been deleted.") {
+                //                    self.navigationController?.popViewController(animated: true)
+                //                }
             }
         } catch {
             print("❌ Error deleting habit: \(error.localizedDescription)")
         }
     }
-
+    
+    @objc func checkInTapped() {
+        if habit.isCheckedInToday {
+            showSimpleAlert(title: "Oops!", message: "You’ve already checked in today for \(self.habit.title).")
+            return
+        }
+        
+        cameraManager.requestCameraAccessAndPresent(for: habit) { [weak self] image, habit in
+            guard let self = self, let habit = habit else { return }
+            
+            DispatchQueue.global(qos: .userInitiated).async {
+                try? self.realm.write {
+                    habit.checkIn(realm: self.realm, withImage: image)
+                }
+                
+                self.habit = habit
+                self.showSimpleAlert(
+                    title: "Great job!",
+                    message: "Successfully checked in for \"\(habit.title)\". Keep the streak going! 💪"
+                )
+            }
+        }
+        
+        
+//        cameraManager.requestCameraAccessAndPresent(for: habit) { [weak self] image, habit in
+//            guard let self = self, let habit = habit else { return }
+//
+//            DispatchQueue.main.async {
+//                do {
+//                    try self.realm.write {
+//                        habit.checkIn(realm: self.realm, withImage: image)
+//                    }
+//
+//                    self.habit = habit
+//                    self.showSimpleAlert(
+//                        title: "Great job!",
+//                        message: "Successfully checked in for \"\(habit.title)\". Keep the streak going! 💪"
+//                    )
+//                } catch {
+//                    print("❌ Realm write error: \(error)")
+//                }
+//            }
+//        }
+        
+    }
+    
 }

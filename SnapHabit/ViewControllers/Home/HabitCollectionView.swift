@@ -33,6 +33,8 @@ class HabitCollectionView: UICollectionView {
         self.register(DoneHabitCollectionViewCell.self, forCellWithReuseIdentifier: "doneCell")
         self.register(NotDoneHabitCollectionViewCell.self, forCellWithReuseIdentifier: "notDoneCell")
         
+        self.backgroundColor = .clear
+        
 //        self.isPagingEnabled = true
         self.showsVerticalScrollIndicator = false
 //        self.showsHorizontalScrollIndicator = false

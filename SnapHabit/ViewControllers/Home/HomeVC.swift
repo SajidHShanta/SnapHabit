@@ -31,7 +31,7 @@ class HomeVC: BaseVC {
     }()
     
     private let progressTitleLabel = UILabel(text: "Today's Progress", font: .roundedSystemFont(ofSize: 18, weight: .bold), textColor: .text, textAlignment: .left, numberOfLines: 1)
-    private let progressValueLabel  = UILabel(text: "3/5 completed", font: .roundedSystemFont(ofSize: 14, weight: .semibold), textColor: .accent, textAlignment: .left, numberOfLines: 1)
+    private let progressValueLabel  = UILabel(text: "", font: .roundedSystemFont(ofSize: 14, weight: .semibold), textColor: .accent, textAlignment: .left, numberOfLines: 1)
     private let progressBar: UIProgressView = {
         let view = UIProgressView()
         view.progressTintColor = .accent
@@ -60,15 +60,18 @@ class HomeVC: BaseVC {
     var habits: Results<Habit>? {
         didSet {
             habitCollectionView.items = habits
+            updateProgress()
         }
     }
+    
+    var doneHabitCount: Int = 0
         
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Do any additional setup after loading the view.
         
-        title = "SnapHabit"
+//        title = "SnapHabit"
         self.navigationController?.isNavigationBarHidden = true
         
         cameraManager = CameraPermissionManager(presentingVC: self)
@@ -85,9 +88,23 @@ class HomeVC: BaseVC {
         }
                 
         setupViews()
-        loadHabits()
+        updateProgress()
         
-        progressBar.setProgress(0.75, animated: true)
+        DispatchQueue.main.async {
+            self.loadHabits()
+        }
+        
+//        DispatchQueue.global(qos: .userInitiated).async {
+//            autoreleasepool {
+//                let realm = try! Realm()
+//                let warmup = realm.objects(Habit.self).sorted(byKeyPath: "createdAt", ascending: true)
+//                _ = warmup.first // Force lazy load, schema access
+//            }
+//
+//            DispatchQueue.main.async {
+//                self.loadHabits()
+//            }
+//        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -136,6 +153,17 @@ class HomeVC: BaseVC {
         ).withMargins(.init(top: 0, left: 16, bottom: 0, right: 16))
     }
     
+    fileprivate func updateProgress() {
+        if let total = habits?.count,
+           let doneToday = habits?.count(where: {$0.isCheckedInToday}) {
+            progressValueLabel.text = "\(doneToday)/\(total) completed"
+            
+            progressBar.progress = (Float(doneToday) / Float(total))
+        } else {
+            progressValueLabel.text = ""
+        }
+    }
+    
     @objc func addHabitTapped() {
         let alert = UIAlertController(title: "New Habit", message: "Enter habit title", preferredStyle: .alert)
 
@@ -167,11 +195,13 @@ class HomeVC: BaseVC {
 
         present(alert, animated: true)
     }
-
     
     fileprivate func loadHabits() {
         habits = realm.objects(Habit.self).sorted(byKeyPath: "createdAt", ascending: true)
-        observeHabits()
+
+        DispatchQueue.main.async {
+            self.observeHabits()
+        }
     }
     
     fileprivate func observeHabits() {

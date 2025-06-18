@@ -31,7 +31,7 @@ class HabitEntryGridView: UICollectionView {
         register(HabitEntryGridCell.self, forCellWithReuseIdentifier: "entryCell")
         
         backgroundColor = .clear
-        isScrollEnabled = false // Let parent scroll handle it
+        isScrollEnabled = true
         contentInset = .zero
     }
 
@@ -64,28 +64,44 @@ extension HabitEntryGridView: UICollectionViewDelegate, UICollectionViewDataSour
         let spacing: CGFloat = 8
         let totalSpacing = (columns - 1) * spacing
         let cellWidth = (frame.width - totalSpacing) / columns
-        return CGSize(width: cellWidth, height: cellWidth + 20)
+        return CGSize(width: cellWidth, height: cellWidth)
     }
 }
 
 class HabitEntryGridCell: UICollectionViewCell {
     
     let imageView = UIImageView(image: nil, contentMode: .scaleAspectFill)
-    let dateLabel = UILabel(font: .roundedSystemFont(ofSize: 18, weight: .regular), textColor: .darkGray)
+    let dateLabel: UILabel = {
+        let label =  UILabel(text: "Today", font: .roundedSystemFont(ofSize: 12, weight: .semibold), textColor: .white, textAlignment: .center, numberOfLines: 0)
+        label.sizeToFit()
+        return label
+    }()
+    let dateContainer: UIView = {
+        let view = UIView(backgroundColor: .black.withAlphaComponent(0.4))
+        view.layer.cornerRadius = 10
+        return view
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 8
+//        imageView.clipsToBounds = true
+//        imageView.layer.cornerRadius = 8
         
-        stack(
-            imageView.withHeight(self.frame.width),
-            dateLabel,
-            spacing: 4
-        )
+        self.addSubview(imageView)
+        imageView.fillSuperview()
         
-        backgroundColor = .systemGray6
+        dateContainer.stack(
+            dateLabel
+        ).padLeft(16).padRight(16)
+        
+        imageView.stack(
+            imageView.hstack(
+                dateContainer.withHeight(25)
+            )
+        ).withMargins(.allSides(6))
+        
+        backgroundColor = .accent
         layer.cornerRadius = 10
         clipsToBounds = true
     }
