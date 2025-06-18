@@ -108,8 +108,8 @@ class DetailsVC: BaseVC {
             streakLabel,
             maxStreakLabel,
             container.hstack(
-                editButton.withSize(.init(width: 50, height: 50)),
-                deleteButton.withSize(.init(width: 50, height: 50)),
+                editButton.withHeight(50),//.withSize(.init(width: 50, height: 50)),
+                deleteButton.withHeight(50),//.withSize(.init(width: 50, height: 50)),
                 spacing: 16,
                 distribution: .fillEqually
             ),
