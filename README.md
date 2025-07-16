@@ -2,6 +2,8 @@
 
 SnapHabit is a photo-based habit tracker that helps you build daily routines by uploading one image a day — whether it’s cycling, journaling, or eating healthy. Track your progress with visual streaks, habit stats, and a daily photo log.
 
+*Ongoing fun project
+
 <img width="1920" height="1080" alt="snaphabit ui" src="https://github.com/user-attachments/assets/e78b024f-ba0f-4f7e-83e0-2df3cd289584" />
 
 
